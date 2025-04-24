@@ -12,6 +12,10 @@ st.write("Please enter the text below for knowledge graph extraction.")
 
 text_input = st.text_area("Input Text", height=200)
 json_input = st.text_area("Input Previous Knowledge Graph (JSON)", height=200, help="Paste the previous knowledge graph JSON here.")
+# uploaded_file = st.file_uploader("Upload textbook text", type="txt")
+# if uploaded_file:
+#     pages = uploaded_file.read().decode("utf-8").split("\f")
+#     # 后续自动处理章节即可
 
 if 'graph_data' not in st.session_state:
     st.session_state.graph_data = None
@@ -115,15 +119,17 @@ def parse_and_merge_json_input(type):
 
 
 def save_graph_to_file(nodes_data, edges_data):
+    # 时间戳命名
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    file_name = f"knowledge_graph_{timestamp}.json"
+    file_name = f"kg_{timestamp}.json"
+    file_path = os.path.join("json_data", file_name)
 
     graph_data = {
         "nodes": nodes_data,
         "edges": edges_data
     }
 
-    with open(file_name, "w", encoding="utf-8") as f:
+    with open(file_path, "w", encoding="utf-8") as f:
         json.dump(graph_data, f, ensure_ascii=False, indent=4)
 
     st.success(f"Graph saved as {file_name}")

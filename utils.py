@@ -156,7 +156,11 @@ def generate_graph_data(text, json_input=None, type="subgraph"):
 
     try:
         # Call OpenAI API
-        output = call_llm(system_msg, user_msg, st.session_state.current_model)
+        # output = call_llm(system_msg, user_msg, st.session_state.current_model)
+
+        # FIXME: removed st here
+        output = call_llm(system_msg, user_msg)
+
         if not output:
             raise ValueError("API returned empty response")
 
@@ -204,8 +208,9 @@ def generate_graph_data(text, json_input=None, type="subgraph"):
             # if str(edge['to']) not in node_ids:
             #     raise ValueError(f"Edge references non-existent target node: {edge['to']}")
 
-        # return result['nodes'], result['edges']
-        return result['nodes'], result['edges'], system_msg, st.session_state.current_model
+        # FIXME: removed the last two returnings
+        return result['nodes'], result['edges']
+        # return result['nodes'], result['edges'], system_msg, st.session_state.current_model
 
 
     except json.JSONDecodeError as je:
