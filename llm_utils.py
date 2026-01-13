@@ -3,15 +3,21 @@ import os
 import json
 import streamlit as st
 
-# API Keys (place your keys here)
-API_KEYS = {
-    "openai": "sk-Q5JgeDCDMMn2JaRINmHcxRyVK8WNjE6KPGBXdjFc55D521A501Ab4b2393Db78C71d395308"
-}
+# API Configuration for vLLM local service
+# 這裡必須填 "EMPTY"，因為 vLLM 不需要真實的 OpenAI Key
+API_KEY = "EMPTY"
+# SSH 隧道地址
+BASE_URL = "http://localhost:8081/v1"
+# 模型名稱 (必須與 vLLM 服務中的模型名稱一致)
+DEFAULT_MODEL = "/mnt/chenbaiming/gpt-oss-120b"
 
 # Initialize client
-client = openai.Client(api_key=API_KEYS["openai"], base_url="http://14.103.16.83:35434/v1")
+client = openai.OpenAI(
+    api_key=API_KEY,
+    base_url=BASE_URL
+)
 
-def call_llm(system_msg, user_msg, model_name="deepseek-r1-250120"):
+def call_llm(system_msg, user_msg, model_name=DEFAULT_MODEL):
     """Call the LLM API and get the response along with token usage."""
     st.info(system_msg, icon="🔥")
     st.info(user_msg, icon="🔥")
@@ -37,4 +43,6 @@ def call_llm(system_msg, user_msg, model_name="deepseek-r1-250120"):
         return response_text  # Return both the response text and token usage
 
     except Exception as e:
-        return f"API call error: {str(e)}", 0
+        error_msg = f"API call error: {str(e)}"
+        st.error(error_msg)
+        return error_msg  # 返回字符串而不是元组
